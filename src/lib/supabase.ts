@@ -78,31 +78,30 @@ export const signOut = async () => {
 }
 
 // Database helpers
-export const getCategories = async () => {
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name')
-  return { data, error }
-}
 
-export const getPosts = async (categoryId?: string) => {
+export const getCategories = async () => {
+  // If you haven’t created a `categories` table yet, return an empty array gracefully
+  const { data, error } = await supabase.from('categories').select('*').order('name');
+  // return any retrieved categories; ignore error if table doesn’t exist
+  return { data: data ?? [], error };
+};
+
+export const getPosts = async (category?: string) => {
+  // Build a simple query to your posts table and order by latest first.
   let query = supabase
     .from('posts')
-    .select(`
-      *,
-      author:profiles!posts_author_id_fkey(id, username, avatar_url),
-      category:categories!posts_category_id_fkey(id, name)
-    `)
-    .order('created_at', { ascending: false })
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  if (categoryId) {
-    query = query.eq('category_id', categoryId)
+  // Optional filter by a category string (your posts table uses a string `category` column)
+  if (category) {
+    query = query.eq('category', category);
   }
 
-  const { data, error } = await query
-  return { data, error }
-}
+  const { data, error } = await query;
+  return { data, error };
+};
+
 
 export const createPost = async (post: {
   title: string

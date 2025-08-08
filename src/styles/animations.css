@@ -439,3 +439,24 @@
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, #7c3aed, #0891b2);
 }
+
+/* Orbit animation: rotates an element around its center */
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(50px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(50px) rotate(-360deg);
+  }
+}
+
+.orbit-animation {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  animation: orbit 8s linear infinite;
+  pointer-events: none;
+}
+
