@@ -489,7 +489,7 @@ const StartupList = forwardRef<{ refresh: () => void }, StartupListProps>(({ ref
             </motion.button>
           </motion.div>
 
-          {/* Error Display */}
+          {/* Error Display
           {error && (
             <motion.div 
               className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6 max-w-2xl mx-auto"
@@ -507,7 +507,7 @@ const StartupList = forwardRef<{ refresh: () => void }, StartupListProps>(({ ref
                 Dismiss
               </button>
             </motion.div>
-          )}
+          )} */}
 
           {/* Enhanced Search and Filter Controls */}
           <motion.div 
