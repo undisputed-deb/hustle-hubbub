@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { 
   ArrowLeft, Save, X, Upload, Link as LinkIcon, 
-  Flag, MapPin, DollarSign, Tag, Video, Image as ImageIcon,
+  Flag, MapPin, DollarSign, Tag, Image as ImageIcon,
   AlertCircle, CheckCircle, Loader
 } from 'lucide-react';
 
@@ -13,13 +13,11 @@ interface PostFormData {
   content: string;
   category: string;
   image_url: string;
-  video_url: string;
   tags: string;
   funding_stage: string;
   location: string;
   website: string;
   revenue: string;
-  flag: string;
 }
 
 const EditPostPage: React.FC = () => {
@@ -31,13 +29,11 @@ const EditPostPage: React.FC = () => {
     content: '',
     category: '',
     image_url: '',
-    video_url: '',
     tags: '',
     funding_stage: '',
     location: '',
     website: '',
-    revenue: '',
-    flag: ''
+    revenue: ''
   });
   
   const [loading, setLoading] = useState(true);
@@ -53,14 +49,6 @@ const EditPostPage: React.FC = () => {
   
   const fundingStages = [
     'Idea', 'Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C+', 'IPO', 'Acquired'
-  ];
-  
-  const flags = [
-    { value: '', label: 'No Flag' },
-    { value: 'Question', label: '❓ Question' },
-    { value: 'Opinion', label: '💡 Opinion' },
-    { value: 'Discussion', label: '💬 Discussion' },
-    { value: 'News', label: '📰 News' }
   ];
 
   // Load existing post data
@@ -97,13 +85,11 @@ const EditPostPage: React.FC = () => {
         content: post.content || '',
         category: post.category || '',
         image_url: post.image_url || '',
-        video_url: post.video_url || '',
         tags: post.tags || '',
         funding_stage: post.funding_stage || '',
         location: post.location || '',
         website: post.website || '',
-        revenue: post.revenue || '',
-        flag: post.flag || ''
+        revenue: post.revenue || ''
       });
       
     } catch (err) {
@@ -143,13 +129,11 @@ const EditPostPage: React.FC = () => {
         content: formData.content.trim(),
         category: formData.category || 'Other',
         image_url: formData.image_url.trim() || null,
-        video_url: formData.video_url.trim() || null,
         tags: formData.tags.trim() || null,
         funding_stage: formData.funding_stage || null,
         location: formData.location.trim() || null,
         website: formData.website.trim() || null,
-        revenue: formData.revenue.trim() || null,
-        flag: formData.flag || null
+        revenue: formData.revenue.trim() || null
       };
 
       const { error } = await supabase
@@ -170,7 +154,8 @@ const EditPostPage: React.FC = () => {
 
     } catch (err) {
       console.error('Error updating post:', err);
-      setError('Failed to update post');
+      console.error('Full error details:', JSON.stringify(err, null, 2));
+      setError(`Failed to update post: ${err.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
@@ -304,65 +289,34 @@ const EditPostPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Category and Flag */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">Category</label>
-              <select
-                value={formData.category}
-                onChange={(e) => handleInputChange('category', e.target.value)}
-                className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
-              >
-                <option value="">Select category</option>
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Post Flag</label>
-              <select
-                value={formData.flag}
-                onChange={(e) => handleInputChange('flag', e.target.value)}
-                className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
-              >
-                {flags.map(flag => (
-                  <option key={flag.value} value={flag.value}>{flag.label}</option>
-                ))}
-              </select>
-            </div>
+          {/* Category */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Category</label>
+            <select
+              value={formData.category}
+              onChange={(e) => handleInputChange('category', e.target.value)}
+              className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+            >
+              <option value="">Select category</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
           </div>
 
-          {/* Media */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium mb-2">
-                <ImageIcon className="w-4 h-4" />
-                Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.image_url}
-                onChange={(e) => handleInputChange('image_url', e.target.value)}
-                placeholder="https://example.com/image.jpg"
-                className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium mb-2">
-                <Video className="w-4 h-4" />
-                Video URL
-              </label>
-              <input
-                type="url"
-                value={formData.video_url}
-                onChange={(e) => handleInputChange('video_url', e.target.value)}
-                placeholder="https://youtube.com/watch?v=..."
-                className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
-              />
-            </div>
+          {/* Image URL */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium mb-2">
+              <ImageIcon className="w-4 h-4" />
+              Image URL
+            </label>
+            <input
+              type="url"
+              value={formData.image_url}
+              onChange={(e) => handleInputChange('image_url', e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
+            />
           </div>
 
           {/* Business Details */}
