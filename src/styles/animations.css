@@ -750,3 +750,198 @@
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   }
 }
+
+/* Mobile-specific fixes for black screen issue */
+
+/* Ensure body and html don't have overflow issues on mobile */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* Fix for mobile viewport height issues */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  /* Ensure main content is visible */
+  #root {
+    position: relative;
+    z-index: 1;
+    background: #0f0f23; /* Fallback background */
+  }
+
+  /* Mobile-specific hero section fixes */
+  .hero-section {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  /* Ensure all sections are visible on mobile */
+  section {
+    position: relative;
+    z-index: 10;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Fix for floating elements on mobile */
+  .animate-floating-elements,
+  .animate-float,
+  .parallax-float {
+    display: none !important;
+  }
+
+  /* Disable complex animations on mobile for performance */
+  .animate-hero-background,
+  .animate-floating-complex,
+  .animate-morph-shape {
+    animation: none !important;
+  }
+
+  /* Ensure text is visible */
+  h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+    position: relative;
+    z-index: 20;
+  }
+
+  p, span, div {
+    position: relative;
+    z-index: 20;
+  }
+
+  /* Fix for mobile navbar */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Mobile button fixes */
+  button {
+    position: relative;
+    z-index: 30;
+    touch-action: manipulation;
+  }
+
+  /* Ensure cards are visible on mobile */
+  .startup-card,
+  .feature-card,
+  .animated-card {
+    position: relative;
+    z-index: 20;
+    background: rgba(31, 41, 55, 0.9) !important;
+    backdrop-filter: blur(5px);
+  }
+
+  /* Mobile modal fixes */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .modal-content {
+    position: relative;
+    z-index: 10000;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Fix for mobile touch scrolling */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+
+  /* Disable backdrop-filter on mobile for performance */
+  .backdrop-blur-sm,
+  .backdrop-blur {
+    backdrop-filter: none !important;
+    background: rgba(15, 15, 35, 0.95) !important;
+  }
+
+  /* Mobile-specific gradients */
+  .bg-gradient-to-br {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%) !important;
+  }
+
+  /* Ensure content doesn't get hidden behind fixed elements */
+  .content-wrapper {
+    padding-top: 60px; /* Account for fixed navbar */
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Mobile-specific text sizing */
+  .text-5xl,
+  .text-6xl {
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Fix for mobile viewport issues with vh units */
+  .h-screen,
+  .min-h-screen {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    min-height: -webkit-fill-available;
+  }
+
+  /* Disable problematic transforms on mobile */
+  .group:hover .group-hover\:scale-110 {
+    transform: none !important;
+  }
+
+  /* Mobile-safe animations */
+  @keyframes mobileFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .mobile-fade-in {
+    animation: mobileFadeIn 0.5s ease-out;
+  }
+}
+
+/* Additional mobile landscape fixes */
+@media (max-width: 768px) and (orientation: landscape) {
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  
+  .hero-section {
+    min-height: 100vh;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Force hardware acceleration for smoother scrolling */
+@media (max-width: 768px) {
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}

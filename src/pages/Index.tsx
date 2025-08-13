@@ -15,8 +15,21 @@ const Index = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const startupListRef = useRef<{ refresh: () => void }>(null);
   const { toast } = useToast();
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Scroll reveal animation effect
   useEffect(() => {
@@ -85,63 +98,74 @@ const Index = () => {
   }, [isFormOpen]);
 
   return (
-    <div className="min-h-screen bg-background relative">
-      {/* Animated Background - appears throughout the page as you scroll */}
-      <AnimatedBackground />
+    <div className="min-h-screen bg-background relative overflow-x-hidden">
+      {/* Animated Background - Only on desktop to avoid mobile issues */}
+      {!isMobile && <AnimatedBackground />}
       
-      {/* Navigation */}
-      <div className="relative z-40">
+      {/* Navigation - Ensure it's always on top */}
+      <div className="relative z-50">
         <Navbar />
       </div>
       
-      {/* Hero Section with Dynamic Background */}
-      <div id="home" className="scroll-reveal relative z-30">
-        <HeroSection 
-          onLaunchClick={handleLaunchClick} 
-          onJoinClick={handleJoinClick}
-        />
+      {/* Main Content Container - Ensure proper stacking */}
+      <div className="relative z-40">
+        {/* Hero Section with Dynamic Background */}
+        <div id="home" className="scroll-reveal relative">
+          <HeroSection 
+            onLaunchClick={handleLaunchClick} 
+            onJoinClick={handleJoinClick}
+          />
+        </div>
+        
+        {/* Features Section */}
+        <div id="features" className="scroll-reveal relative bg-background/95 backdrop-blur-sm">
+          <FeaturesSection />
+        </div>
+        
+        {/* Startups Showcase */}
+        <div id="startups" className="scroll-reveal relative bg-background/95 backdrop-blur-sm">
+          <StartupList ref={startupListRef} refreshTrigger={refreshTrigger} />
+        </div>
+        
+        {/* Community Forum */}
+        <div id="forum" className="scroll-reveal relative bg-background/90 backdrop-blur-sm">
+          <ForumSection />
+        </div>
+        
+        {/* Call to Action */}
+        <div id="launch" className="scroll-reveal relative bg-background/95 backdrop-blur-sm">
+          <CTASection 
+            onLaunchClick={handleLaunchClick}
+            onJoinClick={handleJoinClick}
+          />
+        </div>
       </div>
       
-      {/* Features Section */}
-      <div id="features" className="scroll-reveal relative z-30 bg-background/90 backdrop-blur-sm">
-        <FeaturesSection />
-      </div>
-      
-      {/* Startups Showcase */}
-      <div id="startups" className="scroll-reveal relative z-30 bg-background/95 backdrop-blur-sm">
-        <StartupList ref={startupListRef} refreshTrigger={refreshTrigger} />
-      </div>
-      
-      {/* Community Forum */}
-      <div id="forum" className="scroll-reveal relative z-30 bg-background/90 backdrop-blur-sm">
-        <ForumSection />
-      </div>
-      
-      {/* Call to Action */}
-      <div id="launch" className="scroll-reveal relative z-30 bg-background/95 backdrop-blur-sm">
-        <CTASection 
-          onLaunchClick={handleLaunchClick}
-          onJoinClick={handleJoinClick}
-        />
-      </div>
-      
-      {/* Startup Submission Form Modal */}
-      <div className="relative z-50">
+      {/* Modals - Highest z-index */}
+      <div className="relative z-[9999]">
+        {/* Startup Submission Form Modal */}
         <StartupForm 
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
           onSuccess={handleFormSuccess}
         />
-      </div>
-      
-      {/* Join Community Modal */}
-      <div className="relative z-50">
+        
+        {/* Join Community Modal */}
         <JoinCommunityModal
           isOpen={isJoinModalOpen}
           onClose={() => setIsJoinModalOpen(false)}
           onJoin={handleJoinCommunity}
         />
       </div>
+
+      {/* Mobile Debug Info - Remove in production */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed top-20 right-4 bg-red-500 text-white p-2 rounded text-xs z-[9998] md:hidden">
+          Mobile Mode: {isMobile ? 'ON' : 'OFF'}
+          <br />
+          Screen: {typeof window !== 'undefined' ? window.innerWidth : 'Unknown'}px
+        </div>
+      )}
     </div>
   );
 };
